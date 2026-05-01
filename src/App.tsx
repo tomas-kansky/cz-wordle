@@ -64,24 +64,22 @@ export default function App() {
   const [targetWord, setTargetWord] = useState<string | null>(null);
   const [validWords, setValidWords] = useState<Set<string>>(new Set());
 
-  // Zde by v produkci proběhlo načtení z target-words.json
   useEffect(() => {
-    fetch('/target-words.json')
+    fetch('/czech-words.json')
       .then(res => res.json())
       .then(data => {
-        // Zvolíme náhodné slovo nebo pro ukázku vždy první
-        const randomWord = data[Math.floor(Math.random() * data.length)];
-        setTargetWord(randomWord.toUpperCase());
+        const wordsArray = data.map((w: string) => w.toUpperCase());
+        setValidWords(new Set(wordsArray));
+        
+        // Zvolíme náhodné slovo
+        const randomWord = wordsArray[Math.floor(Math.random() * wordsArray.length)];
+        setTargetWord(randomWord);
       })
-      .catch(() => {
-        // Fallback pro případ, že soubor ještě chybí
+      .catch((err) => {
+        console.error("Nepodařilo se načíst slovník:", err);
+        // Fallback
         setTargetWord('PRAHA');
       });
-
-    fetch('/valid-words.json')
-      .then(res => res.json())
-      .then(data => setValidWords(new Set(data.map((w: string) => w.toUpperCase()))))
-      .catch(console.error);
   }, []);
 
   if (!targetWord || validWords.size === 0) {
