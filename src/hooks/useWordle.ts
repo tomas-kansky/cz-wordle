@@ -1,11 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
-import type { GameState } from '../types';
-import { MAX_GUESSES, WORD_LENGTH } from '../types';
+import type { GameState, GameSettings } from '../types';
 
 // Klíč pro localStorage
 const STORAGE_KEY = 'wordle-state';
 
-export function useWordle(targetWord: string, validWords: Set<string>) {
+export function useWordle(targetWord: string, validWords: Set<string>, settings: GameSettings) {
   const [toast, setToast] = useState<string | null>(null);
 
   const [state, setState] = useState<GameState>(() => {
@@ -14,7 +13,12 @@ export function useWordle(targetWord: string, validWords: Set<string>) {
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        if (parsed.targetWord === targetWord) {
+        // Respektujeme starý stav jen pokud souhlasí hledané slovo a nastavení
+        if (
+          parsed.targetWord === targetWord &&
+          parsed.settings?.wordLength === settings.wordLength &&
+          parsed.settings?.maxGuesses === settings.maxGuesses
+        ) {
           return parsed;
         }
       } catch (e) {
@@ -28,6 +32,7 @@ export function useWordle(targetWord: string, validWords: Set<string>) {
       isGameOver: false,
       isGameWon: false,
       targetWord: targetWord,
+      settings: settings,
     };
   });
 
@@ -36,9 +41,27 @@ export function useWordle(targetWord: string, validWords: Set<string>) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }, [state]);
 
+  // Pokud se změní targetWord nebo nastavení zvenčí a neodpovídá stavu, resetujeme
+  useEffect(() => {
+    if (
+      state.targetWord !== targetWord ||
+      state.settings.wordLength !== settings.wordLength ||
+      state.settings.maxGuesses !== settings.maxGuesses
+    ) {
+      setState({
+        guesses: [],
+        currentGuess: '',
+        isGameOver: false,
+        isGameWon: false,
+        targetWord: targetWord,
+        settings: settings,
+      });
+    }
+  }, [targetWord, settings, state.targetWord, state.settings]);
+
   // Pomocná metoda pro validaci
   const isValidWord = (word: string) => {
-    if (validWords.size === 0) return word.length === WORD_LENGTH;
+    if (validWords.size === 0) return word.length === settings.wordLength;
     return validWords.has(word);
   };
 
@@ -46,7 +69,7 @@ export function useWordle(targetWord: string, validWords: Set<string>) {
     if (state.isGameOver) return;
 
     if (key === 'Enter') {
-      if (state.currentGuess.length !== WORD_LENGTH) {
+      if (state.currentGuess.length !== settings.wordLength) {
         setToast("Příliš krátké slovo");
         setTimeout(() => setToast(null), 2000);
         return;
@@ -60,7 +83,7 @@ export function useWordle(targetWord: string, validWords: Set<string>) {
       setState((prev) => {
         const isWon = prev.currentGuess === prev.targetWord;
         const newGuesses = [...prev.guesses, prev.currentGuess];
-        const isOver = isWon || newGuesses.length >= MAX_GUESSES;
+        const isOver = isWon || newGuesses.length >= settings.maxGuesses;
 
         return {
           ...prev,
@@ -81,19 +104,27 @@ export function useWordle(targetWord: string, validWords: Set<string>) {
       return;
     }
 
-    if (/^[a-zA-Z]$/.test(key)) {
-      if (state.currentGuess.length < WORD_LENGTH) {
+    if (/^[a-zA-ZěščřžýáíéúůóďťňĚŠČŘŽÝÁÍÉÚŮÓĎŤŇ]$/i.test(key)) {
+      if (state.currentGuess.length < settings.wordLength) {
+        // Povolujeme diakritiku, zjednodušení na velká písmena
+        // U skutečné hry s českými slovy je třeba nahradit diakritiku (např. normalize)
+        // nebo zajistit, aby target word neměl diakritiku.
+        // Prozatím ponecháváme existující chování
         setState((prev) => ({
           ...prev,
           currentGuess: prev.currentGuess + key.toUpperCase(),
         }));
       }
     }
-  }, [state]);
+  }, [state, settings, isValidWord, targetWord]);
 
   // Posluchač pro klávesnici
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => handleKeyup(e.key);
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ignorujeme, pokud uživatel drží Ctrl, Alt, Meta (aby fungovaly zkratky jako obnova stránky atd.)
+      if (e.ctrlKey || e.altKey || e.metaKey) return;
+      handleKeyup(e.key);
+    };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleKeyup]);
