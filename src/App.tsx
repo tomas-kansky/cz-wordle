@@ -13,14 +13,14 @@ function Game({ targetWord, validWords }: { targetWord: string; validWords: Set<
                       animate-[rotateBg_30s_linear_infinite]">
       </div>
 
-      <div className="app-container mx-auto w-full max-w-[500px] h-[100dvh] flex flex-col relative z-10 px-2 sm:px-4 py-2 sm:py-4">
+      <div className="app-container mx-auto w-full max-w-[500px] h-[100dvh] flex flex-col relative z-10 px-1 sm:px-4 pt-2 pb-1 sm:pb-2">
         <header className="flex justify-center items-center py-2 sm:py-4 border-b border-white/10 mb-4 sm:mb-8">
           <h1 className="text-3xl sm:text-4xl font-extrabold tracking-widest bg-gradient-to-r from-sky-400 to-violet-500 text-transparent bg-clip-text drop-shadow-[0_4px_20px_rgba(56,189,248,0.3)]">
             WORDLE
           </h1>
         </header>
 
-        <main className="game-board flex justify-center items-center flex-1 min-h-0 relative">
+        <main className="game-board flex justify-center items-center flex-1 min-h-0 relative w-full overflow-hidden">
           {toast && (
             <div className="absolute top-[-10px] px-4 py-2 bg-slate-800 border border-slate-600 rounded-lg font-bold shadow-lg animate-pop z-50 text-amber-400">
               {toast}

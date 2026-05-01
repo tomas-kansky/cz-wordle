@@ -25,7 +25,7 @@ export function Row({ guess, targetWord, isEvaluated = false }: RowProps) {
   };
 
   return (
-    <div className="grid grid-cols-5 gap-2 w-full aspect-[5/1]">
+    <div className="grid grid-cols-5 gap-1.5 sm:gap-2 w-full h-full">
       {letters.map((letter, i) => (
         <Tile key={i} letter={letter} status={getStatus(letter, i)} />
       ))}
