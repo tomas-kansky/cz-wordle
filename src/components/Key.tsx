@@ -25,8 +25,8 @@ export function Key({ value, status, onClick, isWide = false }: KeyProps) {
       onClick={() => onClick(value)}
       className={`
         ${bgClass}
-        ${isWide ? 'min-w-[65px] text-sm' : 'min-w-[40px] text-lg'}
-        h-[55px] flex items-center justify-center font-bold uppercase rounded-lg
+        ${isWide ? 'flex-[1.5] text-xs sm:text-sm px-1' : 'flex-1 text-sm sm:text-lg'}
+        h-[48px] sm:h-[55px] flex items-center justify-center font-bold uppercase rounded-md sm:rounded-lg
         transition-all duration-200 cursor-pointer select-none
         hover:-translate-y-[2px] active:translate-y-[1px]
         border border-white/10

@@ -30,9 +30,11 @@ export function Keyboard({ onKeyPress, guesses, targetWord }: KeyboardProps) {
   });
 
   return (
-    <div className="flex flex-col gap-2 mt-auto pb-8">
+    <div className="flex flex-col gap-1.5 sm:gap-2 mt-auto pb-8 w-full">
       {ROWS.map((row, i) => (
-        <div key={i} className="flex justify-center gap-1.5">
+        <div key={i} className="flex justify-center gap-1 sm:gap-1.5 w-full">
+          {/* Odsazení pro prostřední řádek, aby vypadal jako na klasické klávesnici */}
+          {i === 1 && <div className="flex-[0.5]"></div>}
           {row.map((key) => (
             <Key
               key={key}
@@ -42,6 +44,7 @@ export function Keyboard({ onKeyPress, guesses, targetWord }: KeyboardProps) {
               isWide={key === 'Enter' || key === 'Backspace'}
             />
           ))}
+          {i === 1 && <div className="flex-[0.5]"></div>}
         </div>
       ))}
     </div>

@@ -13,7 +13,7 @@ function Game({ targetWord, validWords }: { targetWord: string; validWords: Set<
                       animate-[rotateBg_30s_linear_infinite]">
       </div>
 
-      <div className="app-container mx-auto w-full max-w-[500px] h-screen flex flex-col relative z-10 p-4">
+      <div className="app-container mx-auto w-full max-w-[500px] h-[100dvh] flex flex-col relative z-10 px-2 sm:px-4 py-2 sm:py-4">
         <header className="flex justify-center items-center py-4 border-b border-white/10 mb-8">
           <h1 className="text-4xl font-extrabold tracking-widest bg-gradient-to-r from-sky-400 to-violet-500 text-transparent bg-clip-text drop-shadow-[0_4px_20px_rgba(56,189,248,0.3)]">
             WORDLE
