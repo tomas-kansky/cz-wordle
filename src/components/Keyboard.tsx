@@ -30,7 +30,7 @@ export function Keyboard({ onKeyPress, guesses, targetWord }: KeyboardProps) {
   });
 
   return (
-    <div className="flex flex-col gap-1.5 sm:gap-2 mt-auto pb-8 w-full">
+    <div className="flex flex-col gap-1.5 sm:gap-2 mt-auto w-full">
       {ROWS.map((row, i) => (
         <div key={i} className="flex justify-center gap-1 sm:gap-1.5 w-full">
           {/* Odsazení pro prostřední řádek, aby vypadal jako na klasické klávesnici */}
