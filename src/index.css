@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+@theme {
+  --color-wordle-green: #10b981;
+  --color-wordle-yellow: #f59e0b;
+  --color-wordle-dark: #334155;
+  --color-wordle-gray: #1e293b;
+  --font-outfit: "Outfit", sans-serif;
+}
+
+@layer base {
+  html {
+    font-family: var(--font-outfit);
+  }
+  
+  body {
+    @apply bg-slate-900 text-slate-50;
+    margin: 0;
+    min-height: 100vh;
+  }
+}
+
+/* Custom animace pro pop-in efekt při psaní */
+@keyframes popIn {
+  0% { transform: scale(0.8); opacity: 0; }
+  40% { transform: scale(1.1); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.animate-pop {
+  animation: popIn 0.15s ease-in-out;
+}
+
+/* Flip animace při vyhodnocení */
+@keyframes flipTile {
+  0% { transform: rotateX(0); }
+  50% { transform: rotateX(90deg); }
+  100% { transform: rotateX(0); }
+}
+
+.animate-flip {
+  animation: flipTile 0.6s ease-in-out forwards;
+}
+
+/* Glassmorphism utility pro klávesnici */
+.glass-panel {
+  background: rgba(30, 41, 59, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
